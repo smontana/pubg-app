@@ -1,0 +1,25 @@
+{
+  "name": "pubg-app",
+  "version": "1.0.0",
+  "description": "PUBG app using the pubg api",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smontana/pubg-app.git"
+  },
+  "author": "Stephen Montana",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/smontana/pubg-app/issues"
+  },
+  "homepage": "https://github.com/smontana/pubg-app#readme",
+  "dependencies": {
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "pubg.js": "^3.5.3"
+  }
+}
