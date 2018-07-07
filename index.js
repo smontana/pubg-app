@@ -1,19 +1,39 @@
 // const env = require('dotenv').load(); <-- if using express (maybe?)
 require('dotenv').load();
+const lodash = require('lodash');
 const env = process.env;
 const region = 'xbox-na'
+const http = require('https');
+const fs = require('fs');
 
 const pubg = require('pubg.js');
 const client = new pubg.Client(env.API_KEY, region);
 
+// const telemetryUrl = (id) => {
+//     return `https://telemetry-cdn.playbattlegrounds.com/${region}/2018/01/01/0/0/${id}-telemetry.json`;
+// }
+
+
+function saveMatchTelemetry(matchId, telemetryUrl) {
+    var file = fs.createWriteStream(`${__dirname}/matches/match-${matchId}-telemetry.json`);
+    var request = http.get(telemetryUrl, response => {
+      response.pipe(file);
+    });
+}
+
 //---- Get a single player using their name
 const player = client.getPlayer({name: 'SMontana1992'})
-    .then(player => console.log(JSON.stringify(player, null, 2)))
-    .catch(error => console.log(error))
-
-//---- Retrieve thousands of recent matches, and get stats for any of them
-const matches = client.getSamples()
-    .then(matches => console.log(JSON.stringify(matches, null, 2)))
+    .then(player => {
+        let nMatches = lodash.take(player.relationships.matches, 1);
+        // console.log(nMatches);
+        nMatches.forEach(match => {
+            client.getMatch(match.id)
+                .then(match => {
+                    let telemetryUrl = match.relationships.assets[0].attributes.URL;
+                    saveMatchTelemetry(match.id, telemetryUrl)
+                });
+        });
+    })
     .catch(error => console.log(error))
 
 
